@@ -119,12 +119,22 @@
   if(recapWrap){ recapTpl = q('[data-ahk-template="recap"]', recapWrap) || recapWrap.firstElementChild; if(recapTpl && recapTpl.parentNode){ recapTpl.parentNode.removeChild(recapTpl); } }
 
   function toggleSelect(s){
+    var wasSel = !!selected[s.id];
     if(selected[s.id]){ delete selected[s.id]; }
     else {
       if(s.excl){ SERVICES.forEach(function(o){ if(o.excl===s.excl && o.id!==s.id){ delete selected[o.id]; } }); }
       selected[s.id] = true;
     }
     renderStep();
+    if(!wasSel && selected[s.id]){ maybeAutoAdvance(); }
+  }
+
+  function maybeAutoAdvance(){
+    if(state.step >= STEPS.length-1){ return; }
+    var sec = q('[data-ahk-step="'+STEPS[state.step].id+'"]');
+    if(sec && sec.hasAttribute('data-ahk-autoadvance')){
+      setTimeout(function(){ goStep(state.step+1); }, 350);
+    }
   }
 
   function makeCard(s){
@@ -303,5 +313,6 @@
   qa('[data-ahk="next"]').forEach(function(b){ b.addEventListener('click', function(e){ e.preventDefault(); if(state.step<STEPS.length-1){ goStep(state.step+1); } }); });
 
   renderStep();
+  ROOT.setAttribute('data-ahk-ready','1');
 
 })();
