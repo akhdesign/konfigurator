@@ -1,3 +1,6 @@
+/* AH Design - Anfrage-Konfigurator (HEADLESS fuer Webflow) v4 */
+/* Steuert native Webflow-Elemente ueber data-ahk-Hooks, klont [data-ahk-template="card"]. */
+/* v4: channelHasSel wieder drin + Default-Open (data-ahk-default-open) + Auto-Advance + Flash-Fix */
 (function(){
   "use strict";
   var SERVICES = [
@@ -233,7 +236,8 @@
     { key:'chatads',   fam:'ChatGPT Ads' },
     { key:'sst',       fam:'Server Side Tracking' }
   ];
-   function renderGrowth(){
+  function channelHasSel(ch){ return byFamily(ch.fam).some(function(s){ return selected[s.id]; }); }
+  function renderGrowth(){
     if(!state.growthInit){
       state.growthInit = true;
       CHANNELS.forEach(function(ch){
