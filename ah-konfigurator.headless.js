@@ -233,8 +233,15 @@
     { key:'chatads',   fam:'ChatGPT Ads' },
     { key:'sst',       fam:'Server Side Tracking' }
   ];
-  function channelHasSel(ch){ return byFamily(ch.fam).some(function(s){ return selected[s.id]; }); }
-  function renderGrowth(){
+   function renderGrowth(){
+    if(!state.growthInit){
+      state.growthInit = true;
+      CHANNELS.forEach(function(ch){
+        var chip = q('[data-ahk-channel="'+ch.key+'"]');
+        var block = q('[data-ahk-channel-block="'+ch.key+'"]');
+        if((chip && chip.hasAttribute('data-ahk-default-open')) || (block && block.hasAttribute('data-ahk-default-open'))){ state.channels[ch.key] = true; }
+      });
+    }
     CHANNELS.forEach(function(ch){ if(channelHasSel(ch)){ state.channels[ch.key]=true; } });
     CHANNELS.forEach(function(ch){
       var on = !!state.channels[ch.key];
